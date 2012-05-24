@@ -7,9 +7,15 @@ Caution
 =====
 This was the first project I have written in Go, thus probably not very idiomatic.
 
+What's the point?
+=====
+Of course, the functionality this pkg provides is almost the same as the bultin map's.
+But I have written this pkg for myself mostly to be able to tweak internals, provide any type which implements a given interface,
+implement this as a counted B+tree (not ready yet, see below), and be able to iterate in order.
+
 Examples
 =====
-
+```
 import(
 	"github.com/opesun/btree"
 	"fmt"
@@ -41,7 +47,20 @@ func main() {
 	// Btree accepts Comper interface
 	t.Insert(Int(8))
 	fmt.Println(t.Find(Int(8)))
+	fmt.Println(t.Delete(Int(8)))
+	fmt.Println(t.Find(Int(8)))
 }
+```
+
+What's up with those panics in the source code, a Go pkg shall not panic!
+=====
+The fact is, the pkg only panics if there is a bug in the algorithm, and it's better for you, me, and the globe if you notice it.
+
+Future
+=====
+
+There is a missing functionality in the tree what I want to implement soon... the FindXth() method, but that requires a counted B+tree.
+All the building blocks are there to make this change, I have just not found the time yet.
 
 Credits
 =====
