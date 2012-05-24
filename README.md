@@ -16,39 +16,40 @@ implement this as a counted B+tree (not ready yet, see below), and be able to it
 Examples
 =====
 ```
+package main
+
 import(
-	"github.com/opesun/btree"
-	"fmt"
+    "github.com/opesun/btree"
+    "fmt"
 )
 
+// Here we declare a type what the btree will happily accept.
+// Note this design does not really allow more than one type in a btree, but thats the point.
+// Of course, if you want, you can implement your very own crazy types which compare ints to string or things like that.
 type Int int
-func (i Int) Less(c Comper) bool {
-	a, ok := c.(Int)
-	if !ok {
-		return false
-	}
-	return i < a
+func (i Int) Less(c btree.Comper) bool {
+    a, ok := c.(Int)
+    if !ok {
+        return false
+    }
+    return i < a
 }
-func (i Int) Eq(c Comper) bool {
-	a, ok := c.(Int)
-	if !ok {
-		return false
-	}
-	return i == a
+func (i Int) Eq(c btree.Comper) bool {
+    a, ok := c.(Int)
+    if !ok {
+        return false
+    }
+    return i == a
 }
-
-//type Comper interface{
-//	Less(Comper) bool
-//	Eq(Comper) bool
-//}
 
 func main() {
-	t := btree.NewBtree(50) // branching factor of the btree
-	// Btree accepts Comper interface
-	t.Insert(Int(8))
-	fmt.Println(t.Find(Int(8)))
-	fmt.Println(t.Delete(Int(8)))
-	fmt.Println(t.Find(Int(8)))
+    t := btree.NewBtree(50) // branching factor of the btree. For high performance 100 is optimal.
+    t.Insert(Int(8))		// Btree accepts btee.Comper interface
+    fmt.Println(
+		t.Find(Int(8)),
+		t.Delete(Int(8)),
+		t.Find(Int(8)),
+	)
 }
 ```
 
