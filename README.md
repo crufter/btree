@@ -1,7 +1,7 @@
 Btree
 =====
-
 This is technically a B+Tree, but the btree name is easier on the tongoue :). Implemented in Go.
+The leaves are chained bidirectionally.
 
 Caution
 =====
@@ -12,6 +12,12 @@ What's the point?
 Of course, the functionality this pkg provides is almost the same as the bultin map's.
 But I have written this pkg for myself mostly to be able to tweak internals, provide any type which implements a given interface,
 implement this as a counted B+tree (not ready yet, see below), and be able to iterate in order.
+
+For now use the source more like an algorithm than an all around pkg solution. (This will change soon)
+
+Is it threadsafe?
+=====
+No.
 
 Examples
 =====
@@ -59,11 +65,9 @@ The fact is, the pkg only panics if there is a bug in the algorithm, and it's be
 
 Future
 =====
-
 There is a missing functionality in the tree what I want to implement soon... the FindXth() method, but that requires a counted B+tree.
 All the building blocks are there to make this change, I have just not found the time yet.
 
 Credits
 =====
-
 - Thanks skelterjohn (John Asmuth) for pointing out that I don't need two different struct for the node and leaf, and also for helping me grasping some concepts of Go.
