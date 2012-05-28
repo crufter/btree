@@ -15,7 +15,7 @@ import(
 
 func NewBtree(nodesize int) *Btree {
 	if nodesize < 5 {
-		panic("Node size must be at least 3-nak kell lennie az insert, 5 because of deletion, due to the characteristics of the implementation.")
+		panic("Node size must be at least 3 because of insert, 5 because of deletion, due to the characteristics of the implementation.")
 	}
 	nt := new(Btree)
 	nt.root = newLeaf(nodesize)
@@ -390,7 +390,7 @@ func (tree *Btree) Find(val Comper) bool {
 		spill_amt := (right.size-left.size)/2
 		//fmt.Println("spilling to left", spill_amt, right.size, left.size, left, right)
 		if spill_amt<= 0 {
-			panic("The fuck are you doing man?")
+			panic("Please turn off your computer before it explodes.")
 		}
 		if left.isNode() {
 			copyFromBegN(left, right, spill_amt)
