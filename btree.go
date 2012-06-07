@@ -16,13 +16,13 @@ func newNode(nodesize int) *Node {
 
 func New(nodesize int) (*Btree, error) {
 	if nodesize < 5 {
-		return errors.New("Node size must be at least 3 because of insert, 5 because of deletion due to the characteristics of the implementation.")
+		return nil, errors.New("Node size must be at least 3 because of insert, 5 because of deletion due to the characteristics of the implementation.")
 	}
 	nt := new(Btree)
 	nt.root = newLeaf(nodesize)
 	nt.nodesize = nodesize
 	nt.duplicates_allowed = true
-	return nt
+	return nt, nil
 }
 
 type Int int

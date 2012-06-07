@@ -1,3 +1,5 @@
+// Test for btree package.
+// Omitted errors everywhere, since they don't happen when the btree are used with a correct order.
 package main
 
 import (
@@ -32,22 +34,22 @@ const perfnum = tnum * 20
 
 func TestSmallOrder() {
 	for i := 5; i < 10; i++ {
-		s := btree.NewBtree(i)
+		s, _ := btree.New(i)
 		for j := 0; j < testnum/10; j++ {
 			s.Insert(btree.Int(j))
 		}
 		for j := 0; j < testnum/10; j++ {
 			if s.Find(btree.Int(j)) == false {
-				panic("Shit happened.")
+				panic("Can't find a value.")
 			}
 		}
-		s2 := btree.NewBtree(i)
+		s2, _ := btree.New(i)
 		for j := testnum / 10; j >= 0; j-- {
 			s2.Insert(btree.Int(j))
 		}
 		for j := testnum / 10; j >= 0; j-- {
 			if s2.Find(btree.Int(j)) == false {
-				panic("Shit happened.")
+				panic("Cant find a value.")
 			}
 		}
 	}
@@ -55,7 +57,7 @@ func TestSmallOrder() {
 
 func BenchmarkInsert() {
 	order := 100
-	p := btree.NewBtree(order)
+	p, _ := btree.New(order)
 	fmt.Println("Measuring performance. Order is ", order, ", iteration count is ", perfnum, ":") // (1 million inserts in C++ version with ints only takes 0.1 secs if order is 100.)
 	tim := time.Now()
 	for i := 0; i < perfnum; i++ {
@@ -80,26 +82,26 @@ func TestControlled() {
 func TestBtree() {
 	order := 100
 	// Small order test
-	a := btree.NewBtree(order)
+	a, _ := btree.New(order)
 	for i := 0; i < testnum; i++ {
 		a.Insert(btree.Int(i))
 	}
 	for i := 0; i < testnum; i++ {
 		if a.Find(btree.Int(i)) == false {
 			fmt.Println(i)
-			panic("We cant find something which we should definitely find.")
+			panic("Cant find value.")
 		}
 	}
 	//arr := a.GetAll()
 	//leafTest(a, arr)
-	b := btree.NewBtree(order)
+	b, _ := btree.New(order)
 	for i := testnum; i > 0; i-- {
 		b.Insert(btree.Int(i))
 	}
 	for i := testnum; i > 0; i-- {
 		if b.Find(btree.Int(i)) == false {
 			fmt.Println(i)
-			panic("We cant find something which we should definitely find.")
+			panic("Cant find value.")
 		}
 	}
 	//leafTest(b, arr)
@@ -109,19 +111,19 @@ func TestBtree() {
 	if b.TreeSize() != testnum {
 		panic("Tree \"b\" size is not correct.")
 	}
-	u := btree.NewBtree(order)
+	u, _ := btree.New(order)
 	for i := 0; i < testnum; i++ {
 		u.Insert(btree.Int(i % 2))
 	}
 	for i := 0; i < 2; i++ {
 		if u.Find(btree.Int(i)) == false {
-			panic("Uniq stuff is not working...")
+			panic("Cant find value at unique test.")
 		}
 	}
 	fmt.Println("Insert duplicates, then delete all of them and cry if any not found...")
 	for ord := 5; ord < 43; ord++ {
-		dup_inc := btree.NewBtree(ord)
-		dup_dec := btree.NewBtree(ord)
+		dup_inc, _ := btree.New(ord)
+		dup_dec, _ := btree.New(ord)
 		for mod := 2; mod < 47; mod++ {
 			for k := 0; k <= testnum/5; k++ {
 				dup_inc.Insert(btree.Int(k % mod))
@@ -144,14 +146,14 @@ func TestBtree() {
 	fmt.Println("Doing some slightly controlled stress test.")
 	for ord := 5; ord <= 31; ord++ {
 		m := make(map[int]int)
-		tes := btree.NewBtree(5)
+		tes, _ := btree.New(5)
 		deletion_count := 0
 		for i := 0; i <= tnum*200; i++ {
 			c := rand.Int() % (tnum * 15)
 			v, ok := m[c]
 			if ok != tes.Find(btree.Int(c)) {
 				fmt.Println(v, ok)
-				panic("Real bad, containment does not match with map.")
+				panic("Deviation from map.")
 			}
 			if ok == true {
 				m[c]++
@@ -172,7 +174,7 @@ func TestBtree() {
 					m[c]--
 				}
 				if tes.Delete(btree.Int(c)) == false {
-					panic("Can not found.")
+					panic("Cant find value.")
 				}
 				deletion_count++
 			}

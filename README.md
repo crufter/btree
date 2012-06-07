@@ -49,7 +49,10 @@ func (i Int) Eq(c btree.Comper) bool {
 }
 
 func main() {
-    t := btree.NewBtree(50) // branching factor of the btree. For high performance 100 is optimal.
+    t, err := btree.New(50) // branching factor of the btree. For high performance 100 is optimal.
+	if err != nil {
+		panic(err)
+	}
     t.Insert(Int(8))		// Btree accepts btee.Comper interface
     fmt.Println(
 		t.Find(Int(8)),
