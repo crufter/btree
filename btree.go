@@ -1,8 +1,9 @@
-// B+tree implementation by Dobronszki János (John Dobronszki) @ OPESUN TECHNOLOGIES Kft. (Opesun Technologies Ltd.) 2012
+// B+tree implementation by Dobronszki János @ Opesun Technologies Kft. 2012
+// This package will panic only if there is a bug in the algorithm.
 package btree
 
 import (
-//"sort"
+	"errors"
 )
 
 func newLeaf(nodesize int) *Node {
@@ -13,9 +14,9 @@ func newNode(nodesize int) *Node {
 	return &Node{values: make([]Comper, nodesize), pointers: make([]*Node, nodesize+1)}
 }
 
-func NewBtree(nodesize int) *Btree {
+func New(nodesize int) (*Btree, error) {
 	if nodesize < 5 {
-		panic("Node size must be at least 3 because of insert, 5 because of deletion, due to the characteristics of the implementation.")
+		return errors.New("Node size must be at least 3 because of insert, 5 because of deletion due to the characteristics of the implementation.")
 	}
 	nt := new(Btree)
 	nt.root = newLeaf(nodesize)
@@ -223,7 +224,7 @@ func (tree *Btree) Insert(val Comper) int {
 			p = findPos(c.size, c.values, val)
 			c = c.pointers[p]
 			if c == nil {
-				panic("This should definitely not happen.")
+				panic("There is a nil pointer when going down the tree at insert.")
 			}
 		} else { // Leaf
 			leaf = c
@@ -247,7 +248,7 @@ func (tree *Btree) Find(val Comper) bool {
 			p = findPos(c.size, c.values, val)
 			c = c.pointers[p]
 			if c == nil {
-				panic("Woowoowoo... calm down.")
+				panic("There is a nil pointer when going down the tree at find.")
 			}
 		} else {
 			leaf = c
@@ -347,7 +348,7 @@ func (tree *Btree) spillToRight(left *Node, right *Node, val Comper, p int) (*No
 	//fmt.Println("spilling to right, isnode: ", left.isNode(), left, right)
 	spill_amt := (left.size - right.size) / 2
 	if spill_amt <= 0 {
-		panic("This is a bug :S.")
+		panic("Left node should never be smaller than the right one when spilling to right.")
 	}
 	if left.isNode() {
 		createSpaceN(right, spill_amt)
@@ -394,7 +395,7 @@ func (tree *Btree) spillToLeft(left *Node, right *Node, val Comper, p int) (*Nod
 	spill_amt := (right.size - left.size) / 2
 	//fmt.Println("spilling to left", spill_amt, right.size, left.size, left, right)
 	if spill_amt <= 0 {
-		panic("Please turn off your computer before it explodes.")
+		panic("Right node should never be smaller then the left one when spilling to left.")
 	}
 	if left.isNode() {
 		copyFromBegN(left, right, spill_amt)
@@ -423,12 +424,8 @@ func (tree *Btree) balance(node *Node, p int, val Comper) (*Node, int) {
 	s := node.size
 	ps := node.parent.size
 	half_o := tree.nodesize / 2
-	//fmt.Println(p, node, node.size, node.parent, node.parent.size)
 	if p > ps {
-		panic("Houston, we've got a problem here.")
-	}
-	if node.isNode() {
-		//fmt.Println("!!!!!!!!!!!!", node)
+		panic("The parent position at balancing is larger than the parent size itself.")
 	}
 	switch {
 	case p == ps:
@@ -488,7 +485,7 @@ func runUpAndCorrigate(leaf *Node, dead_val Comper, new_val Comper, pst []int) b
 			break
 		}
 	}
-	panic("Ohohoo, we should definitely find but we did not.")
+	panic("Could not find the value which needed corrigation when running up.")
 	return false
 }
 
@@ -507,7 +504,7 @@ func (tree *Btree) Delete(val Comper) bool {
 			pstack = append(pstack, p)
 			c = c.pointers[p]
 			if c == nil {
-				panic("This should frankly never happen.")
+				panic("There is a nil pointer when going down the tree at deletion.")
 			}
 		} else {
 			leaf = c
